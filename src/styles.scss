@@ -1,2 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 @import "./assets/styles/input.scss";
+
+.centered-container {
+  max-width: 512px;
+  margin: auto;
+}

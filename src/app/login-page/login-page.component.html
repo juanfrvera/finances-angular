@@ -1,1 +1,14 @@
-<p>login-page works!</p>
+<div class="centered-container">
+   <p>Please enter your credentials</p>
+   <div class="label-and-input label-and-input_vertical">
+      <label>Username</label>
+      <input type="text" [(ngModel)]="ui.username" />
+   </div>
+   <div class="label-and-input label-and-input_vertical">
+      <label>Password</label>
+      <input type="password" [(ngModel)]="ui.password" />
+   </div>
+
+   <p>Are you looking to create an account?</p>
+   <button routerLink="/register">Register instead</button>
+</div>
