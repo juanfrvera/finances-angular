@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
-import { PUBLIC_API_URL } from '$env//public';
 import { HttpClient } from '@angular/common/http';
 import { UserStoreService } from '../../store/user-store/user-store.service';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private readonly url = `${PUBLIC_API_URL}/auth`;
+  private readonly url = `${environment.apiUrl}/auth`;
   private token: string | null = null;
   private readonly tokenStorageKey = 'token';
   private readonly tokenExpirationDateKey = 'token_expiration';
