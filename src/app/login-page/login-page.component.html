@@ -1,5 +1,5 @@
 <div class="centered-container">
-   <p>Please enter your credentials</p>
+   <p class="required-step-text">Please enter your credentials</p>
    <div class="label-and-input label-and-input_vertical">
       <label>Username</label>
       <input type="text" [(ngModel)]="ui.username" />
@@ -9,6 +9,11 @@
       <input type="password" [(ngModel)]="ui.password" />
    </div>
 
-   <p>Are you looking to create an account?</p>
-   <button routerLink="/register">Register instead</button>
+   <button (click)="loginClick()" class="primary">Log In</button>
+   <p *ngIf="ui.errorMessage" class="error-feedback">{{ui.errorMessage}}</p>
+
+   <div style="margin-top: 35px;">
+      <p>Are you looking to create an account?</p>
+      <button routerLink="/signup">Sign Up instead</button>
+   </div>
 </div>

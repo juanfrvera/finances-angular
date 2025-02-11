@@ -3,12 +3,12 @@ import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-register-page',
+  selector: 'app-signup-page',
   imports: [RouterLink, FormsModule],
-  templateUrl: './register-page.component.html',
-  styleUrl: './register-page.component.scss',
+  templateUrl: './signup-page.component.html',
+  styleUrl: './signup-page.component.scss',
 })
-export class RegisterPageComponent {
+export class SignUpPageComponent {
   ui = {
     name: undefined,
     username: undefined,

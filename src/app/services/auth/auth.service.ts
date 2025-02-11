@@ -28,7 +28,7 @@ export class AuthService {
     });
   }
 
-  public async register(data: {
+  public async signUp(data: {
     username: string;
     password: string;
     name?: string;
@@ -51,8 +51,12 @@ export class AuthService {
   }
 
   public hasValidToken() {
-    const token = this.getToken();
-    if (!token) return false;
+    try {
+      const token = this.getToken();
+      if (!token) return false;
+    } catch (error) {
+      return false;
+    }
 
     const expirationDate = this.getTokenExpirationDate();
     if (expirationDate) {

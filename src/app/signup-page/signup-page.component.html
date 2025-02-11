@@ -1,5 +1,5 @@
 <div class="centered-container">
-   <p>Please fill the following fields to create your account</p>
+   <p class="required-step-text">Please fill the following fields to create your account</p>
    <div class="label-and-input label-and-input_vertical">
       <label>Name</label>
       <input type="text" [(ngModel)]="ui.name" />
@@ -13,6 +13,10 @@
       <input type="password" [(ngModel)]="ui.password" />
    </div>
 
-   <p>Do you already have an account?</p>
-   <button routerLink="/login">Login instead</button>
+   <button class="primary">Sign Up</button>
+
+   <div style="margin-top: 35px;">
+      <p>Do you already have an account?</p>
+      <button routerLink="/login">Login instead</button>
+   </div>
 </div>

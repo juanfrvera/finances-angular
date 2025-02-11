@@ -1,5 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
-@import "./assets/styles/input.scss";
+@use "./assets/styles/color.scss";
+@use "./assets/styles/text.scss";
+@use "./assets/styles/input.scss";
+@use "./assets/styles/button.scss";
 
 .centered-container {
   max-width: 512px;
