@@ -1,1 +1,8 @@
-<p>home works!</p>
+<div *ngIf="ui.items">
+   <div *ngFor="let item of ui.items" class="item">
+      {{item | json}}
+   </div>
+</div>
+<div *ngIf="!ui.items">
+   <div class="loading">Loading...</div>
+</div>

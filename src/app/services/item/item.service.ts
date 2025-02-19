@@ -1,9 +1,5 @@
-import { Injectable } from '@angular/core';
-import type { IAccount, ICurrencyUI, ItemT, iItem } from '../typings';
-import type { IPayment } from '../util/typings/payment.typings';
-import { ApiService } from './api.service';
-import { PaymentService } from './payment.service';
-import { Item } from '../../typings/item';
+import { Injectable, resource } from '@angular/core';
+import type { Account, CurrencyUI, Item } from '@/typings/item';
 import { HttpClient } from '@angular/common/http';
 import { lastValueFrom } from 'rxjs';
 
@@ -11,84 +7,68 @@ import { lastValueFrom } from 'rxjs';
   providedIn: 'root',
 })
 export class ItemService {
-  private readonly url = '/item';
+  private readonly url = '/items';
   private list?: Item[];
 
-  constructor(private httpClient: HttpClient) {}
+  constructor(private http: HttpClient) {}
 
-  public async getItems() {
-    this.list = await lastValueFrom(this.httpClient.get<Item[]>(this.url));
+  public async getAllItems() {
+    if (!this.list) {
+      this.list = await lastValueFrom(this.http.get<Item[]>(this.url));
 
-    if (this.list) {
+      if (this.list) {
+        this.calculateCurrencies(this.list);
+      }
     }
 
     return this.list;
+  }
+
+  public async create(data: Partial<Item>) {
+    const item = await lastValueFrom(this.http.post<Item>(this.url, data));
+
+    this.addToCurrencyIfAccount(item);
+
+    return item;
+  }
+
+  public update(id: string, updatedFields: Partial<Item>) {
+    return lastValueFrom(
+      this.http.patch<Item>(`${this.url}/${id}`, updatedFields)
+    );
+  }
+
+  public delete(id: string) {
+    return lastValueFrom(this.http.delete(`${this.url}/${id}`));
+  }
+
+  public updateSortOrders(data: Array<{ id: string; sortOrder: number }>) {
+    return lastValueFrom(this.http.post(`${this.url}/updateSortOrders`, data));
   }
 
   private calculateCurrencies(list: Item[]) {
     // Fill currencies with balance
     const currencies = list.filter(
       (item) => item.type === 'currency'
-    ) as ICurrencyUI[];
+    ) as CurrencyUI[];
     currencies.forEach((c) => this.updateCurrencyUI(c, list as Item[]));
   }
 
-  public async create(data: Partial<ItemT>): Promise<ItemT> {
-    const item = await lastValueFrom(
-      this.httpClient.post<Item>(this.url, data)
-    );
-
+  private addToCurrencyIfAccount(item: Item) {
     if (item.type === 'account' && item.currency && this.list) {
-      const currency: ICurrencyUI | undefined = this.list.find(
+      const currency: CurrencyUI | undefined = this.list.find(
         (i) => i.type === 'currency' && i._id === item.currency
-      ) as ICurrencyUI;
-      if (currency) this.updateCurrencyUI(currency, this.list);
+      ) as CurrencyUI;
+      if (currency) {
+        this.updateCurrencyUI(currency, this.list);
+      }
     }
-
-    return item;
   }
 
-  public static async update(
-    id: string,
-    updatedFields: Partial<ItemT>
-  ): Promise<ItemT> {
-    const response = await fetch(`${this.getUrl()}/${id}`, {
-      method: 'PATCH',
-      body: JSON.stringify(updatedFields),
-    });
-    return ApiService.interceptResponse(response);
-  }
-
-  public static async delete(id: string) {
-    const response = await fetch(`${this.getUrl()}/${id}`, {
-      method: 'DELETE',
-    });
-    return ApiService.interceptResponse(response);
-  }
-
-  public static async updateSortOrders(
-    data: Array<{ id: string; sortOrder: number }>
-  ) {
-    const response = await fetch(`${this.getUrl()}/updateSortOrders`, {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
-    return ApiService.interceptResponse(response);
-  }
-
-  /** Creates a payment and returns the created one from the server */
-  public static addPayment(itemId: string, payment: IPayment) {
-    return PaymentService.create({ ...payment, itemId });
-  }
-
-  public static updatePayment(itemId: string, payment: IPayment) {
-    return PaymentService.update({ ...payment, itemId });
-  }
-
-  private updateCurrencyUI(c: ICurrencyUI, list: Item[]) {
+  private updateCurrencyUI(c: CurrencyUI, list: Item[]) {
     const accounts = list.filter(
       (l) => l.type === 'account' && l.currency === c.currency
-    ) as IAccount[];
+    ) as Account[];
     if (accounts && accounts.length) {
       c.total = accounts
         .map((a) => a.balance)
@@ -98,6 +78,8 @@ export class ItemService {
         name: a.name,
         balance: a.balance,
       }));
-    } else c.total = 0;
+    } else {
+      c.total = 0;
+    }
   }
 }
