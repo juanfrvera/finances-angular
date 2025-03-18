@@ -1,0 +1,6 @@
+<div *ngIf="item.type === 'currency'">
+   <app-currency [item]="item"></app-currency>
+</div>
+<div *ngIf="item.type === 'account'">
+   <app-account [item]="item"></app-account>
+</div>

@@ -1,8 +1,17 @@
-<div *ngIf="ui.items">
-   <div *ngFor="let item of ui.items" class="item">
-      {{item | json}}
+<div *ngIf="ui.items" class="home">
+   <div class="item-list">
+      <div class="add-button slot">
+         Add
+      </div>
+      <div (click)="itemClicked(item)" *ngFor="let item of ui.items" class="item slot">
+         <app-item [item]="item"></app-item>
+      </div>
+   </div>
+   <div *ngIf="ui.currentItem" class="right-panel">
+      <app-right-panel [item]="ui.currentItem" (closeClicked)="rightPanelCloseClicked()"></app-right-panel>
    </div>
 </div>
+
 <div *ngIf="!ui.items">
    <div class="loading">Loading...</div>
 </div>
